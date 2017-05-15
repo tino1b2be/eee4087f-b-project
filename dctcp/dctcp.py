@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 # Code modified from https://github.com/vbtdung/dctcp-assignment
-
 import sys
 sys.path = ['../'] + sys.path
 
@@ -118,29 +117,30 @@ else:
 lg.setLogLevel('info')
 
 class StarTopo(Topo):
+
     def __init__(self, n=3, bw=100):
         # Add default members to class.
-        super(StarTopo, self).__init__()
+        super(StarTopo, self ).__init__()
 
         # Host and link configuration
         hconfig = {'cpu': -1}
-        ldealay_config = {'bw': bw, 'delay': args.delay,
-                          'max_queue_size': 1000000
-                          }
-        lconfig = {'bw': bw,
-                   'max_queue_size': int(args.maxq),
-                   'enable_ecn': args.ecn or args.dctcp,
-                   'use_hfsc': args.use_hfsc,
-                   'speedup': float(args.speedup_bw)
-                   }
+    ldealay_config = {'bw': bw, 'delay': args.delay,
+            'max_queue_size': 1000000
+            } 
+    lconfig = {'bw': bw, 
+           'max_queue_size': int(args.maxq),
+           'enable_ecn': args.ecn or args.dctcp,
+           'use_hfsc': args.use_hfsc,
+           'speedup': float(args.speedup_bw)
+        }
 
         print '~~~~~~~~~~~~~~~~~> BW = %s' % bw
 
         # Create switch and host nodes
         for i in xrange(n):
-            self.add_host('h%d' % (i + 1), **hconfig)
+            self.add_host('h%d' % (i+1), **hconfig)
 
-        self.add_switch('s1')
+        self.add_switch('s1',)
 
         self.add_link('h1', 's1', **lconfig)
         for i in xrange(1, n):
@@ -250,3 +250,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
