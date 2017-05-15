@@ -1,6 +1,4 @@
 #!/usr/bin/python
-
-# Code modified from https://github.com/vbtdung/dctcp-assignment
 import sys
 sys.path = ['../'] + sys.path
 
@@ -96,8 +94,8 @@ parser.add_argument('--tcpdump',
                     default=False)
 
 parser.add_argument('--delay',
-    dest="delay",
-    default="0.075ms  0.05ms distribution normal  ")
+	dest="delay",
+	default="0.075ms  0.05ms distribution normal  ")
 
 args = parser.parse_args()
 args.n = int(args.n)
@@ -124,27 +122,27 @@ class StarTopo(Topo):
 
         # Host and link configuration
         hconfig = {'cpu': -1}
-    ldealay_config = {'bw': bw, 'delay': args.delay,
-            'max_queue_size': 1000000
-            } 
-    lconfig = {'bw': bw, 
-           'max_queue_size': int(args.maxq),
-           'enable_ecn': args.ecn or args.dctcp,
-           'use_hfsc': args.use_hfsc,
-           'speedup': float(args.speedup_bw)
-        }
+	ldealay_config = {'bw': bw, 'delay': args.delay,
+			'max_queue_size': 1000000
+			} 
+	lconfig = {'bw': bw, 
+		   'max_queue_size': int(args.maxq),
+		   'enable_ecn': args.ecn or args.dctcp,
+		   'use_hfsc': args.use_hfsc,
+		   'speedup': float(args.speedup_bw)
+		}
 
         print '~~~~~~~~~~~~~~~~~> BW = %s' % bw
 
         # Create switch and host nodes
         for i in xrange(n):
-            self.add_host('h%d' % (i+1), **hconfig)
+            self.addHost('h%d' % (i+1), **hconfig)
 
-        self.add_switch('s1',)
+        self.addSwitch('s1',)
 
-        self.add_link('h1', 's1', **lconfig)
+        self.addLink('h1', 's1', **lconfig)
         for i in xrange(1, n):
-            self.add_link('h%d' % (i+1), 's1', **ldealay_config)
+            self.addLink('h%d' % (i+1), 's1', **ldealay_config)
 
 def waitListening(client, server, port):
     "Wait until server is listening on port"
@@ -190,7 +188,7 @@ def main():
         enable_dctcp()
     topo = StarTopo(n=args.n, bw=args.bw)
     net = Mininet(topo=topo, host=CPULimitedHost, link=TCLink, switch=Switch,
-        autoStaticArp=True)
+	    autoStaticArp=True)
     net.start()
 
     h1 = net.getNodeByName('h1')
@@ -226,23 +224,23 @@ def main():
         h.sendCmd(cmd)
 
     net.getNodeByName('h2').popen('/bin/ping 10.0.0.1 > %s/ping.txt' % args.dir,
-        shell=True)
+	    shell=True)
     if args.tcpdump:
-    for i in xrange(args.n):
-        node_name = 'h%d' % (i+1)
-        net.getNodeByName(node_name).popen('tcpdump -ni %s-eth0 -s0 -w \
-            %s/%s_tcpdump.pcap' % (node_name, args.dir, node_name), 
-            shell=True)
+	for i in xrange(args.n):
+	    node_name = 'h%d' % (i+1)
+	    net.getNodeByName(node_name).popen('tcpdump -ni %s-eth0 -s0 -w \
+		    %s/%s_tcpdump.pcap' % (node_name, args.dir, node_name), 
+		    shell=True)
     progress(seconds)
     for monitor in monitors:
         monitor.terminate()
 
     net.getNodeByName('h1').pexec("/bin/netstat -s > %s/netstat.txt" %
-        args.dir, shell=True)
+	    args.dir, shell=True)
     net.getNodeByName('h1').pexec("/sbin/ifconfig > %s/ifconfig.txt" %
-        args.dir, shell=True)
+	    args.dir, shell=True)
     net.getNodeByName('h1').pexec("/sbin/tc -s qdisc > %s/tc-stats.txt" %
-            args.dir, shell=True)
+    	    args.dir, shell=True)
     net.stop()
     disable_dctcp()
     disable_tcp_ecn()
@@ -250,4 +248,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
