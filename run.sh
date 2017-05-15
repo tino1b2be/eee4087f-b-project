@@ -2,6 +2,7 @@ bw_sender=100
 bw_receiver=100
 delay=0.25
 qsize=120
+dirResult=result
 # Expt 1 : Queue occupancy over time - comparing DCTCP & TCP
 dir1=dctcp-q$qsize
 time=10
