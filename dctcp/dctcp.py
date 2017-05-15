@@ -136,13 +136,13 @@ class StarTopo(Topo):
 
         # Create switch and host nodes
         for i in xrange(n):
-            self.addHost('h%d' % (i+1), **hconfig)
+            self.add_host('h%d' % (i+1), **hconfig)
 
-        self.addSwitch('s1',)
+        self.add_switch('s1',)
 
-        self.addLink('h1', 's1', **lconfig)
+        self.add_link('h1', 's1', **lconfig)
         for i in xrange(1, n):
-            self.addLink('h%d' % (i+1), 's1', **ldealay_config)
+            self.add_link('h%d' % (i+1), 's1', **ldealay_config)
 
 def waitListening(client, server, port):
     "Wait until server is listening on port"
