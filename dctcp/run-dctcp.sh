@@ -2,7 +2,7 @@
 
 # Code modified from https://github.com/vbtdung/dctcp-assignment
 
-bws="10 20 40 80 160 320"
+bws="10 20 40 80 160 320 640"
 t=20
 n=6
 maxq=425
