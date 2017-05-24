@@ -36,7 +36,7 @@ parser.add_argument('--dir', '-d',
 parser.add_argument('-n',
                     dest="n",
                     action="store",
-                    help="Number of nodes in star.  Must be >= 3",
+                    help="Number of nodes.  Must be >= 3",
                     required=True)
 
 parser.add_argument('-t',
@@ -114,11 +114,11 @@ else:
 
 lg.setLogLevel('info')
 
-class StarTopo(Topo):
+class DCTopo(Topo):
 
     def __init__(self, n=3, bw=100):
         # Add default members to class.
-        super(StarTopo, self ).__init__()
+        super(DCTopo, self ).__init__()
 
         # Host and link configuration
         hconfig = {'cpu': -1}
@@ -135,14 +135,48 @@ class StarTopo(Topo):
         print '~~~~~~~~~~~~~~~~~> BW = %s' % bw
 
         # Create switch and host nodes
-        for i in xrange(n):
-            self.add_host('h%d' % (i+1), **hconfig)
+        # n = 6
 
-        self.add_switch('s1',)
+        # create 8 swictes
+        for i in xrange(7):
+        	self.add_switch('s%d' % (i+1))
 
-        self.add_link('h1', 's1', **lconfig)
-        for i in xrange(1, n):
-            self.add_link('h%d' % (i+1), 's1', **ldealay_config)
+        # create 4 hosts
+        for i in xrange(3):
+        	self.add_host('h%d' % (i+1))
+
+        # make links between the two top switches (Core)
+        self.add_link('s1', 's2', **ldealay_config)
+
+        # make links between the two (Aggregation) switches
+		self.add_link('s3', 's4', **ldealay_config)        
+
+		# make links between the two top layers (Core and Aggregation) (4 switches)
+		self.add_link('s1', 's3', **ldealay_config)
+		self.add_link('s1', 's4', **ldealay_config)
+		self.add_link('s2', 's3', **ldealay_config)
+		self.add_link('s2', 's4', **ldealay_config)
+
+		# add links from aggregation layer to access layer
+		self.add_link('s3', 's5', **ldealay_config)
+		self.add_link('s3', 's6', **ldealay_config)
+		self.add_link('s4', 's7', **ldealay_config)
+		self.add_link('s4', 's8', **ldealay_config)
+
+		# add links in the access layer to hosts
+		self.add_link('s5', 's6', **ldealay_config)
+		self.add_link('s5', 'h1', **ldealay_config)
+		self.add_link('s5', 'h2', **ldealay_config)
+		self.add_link('s6', 'h1', **ldealay_config)
+		self.add_link('s6', 'h2', **ldealay_config)
+		
+		self.add_link('s6', 's7', **ldealay_config)
+		self.add_link('s6', 'h3', **ldealay_config)
+		self.add_link('s6', 'h4', **ldealay_config)
+		self.add_link('s7', 'h3', **ldealay_config)
+		self.add_link('s7', 'h4', **ldealay_config)
+
+		# done creating topology
 
 def waitListening(client, server, port):
     "Wait until server is listening on port"
@@ -186,7 +220,7 @@ def main():
         enable_tcp_ecn()
     if args.dctcp:
         enable_dctcp()
-    topo = StarTopo(n=args.n, bw=args.bw)
+    topo = DCTopo(n=args.n, bw=args.bw)
     net = Mininet(topo=topo, host=CPULimitedHost, link=TCLink, switch=Switch,
 	    autoStaticArp=True)
     net.start()
