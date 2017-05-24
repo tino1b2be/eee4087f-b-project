@@ -124,7 +124,16 @@ class DCTopo(Topo):
         hconfig = {'cpu': -1}
 	ldealay_config = {'bw': bw, 'delay': args.delay,
 			'max_queue_size': 1000000
-			} 
+			}
+	ldealay_config_core = {'bw': 10000, 'delay': args.delay,
+			'max_queue_size': 1000000
+			}
+	ldealay_config_agg = {'bw': 4000, 'delay': args.delay,
+			'max_queue_size': 1000000
+			}
+	ldealay_config_acc = {'bw': 2000, 'delay': args.delay,
+			'max_queue_size': 1000000
+			}
 	lconfig = {'bw': bw, 
 		   'max_queue_size': int(args.maxq),
 		   'enable_ecn': args.ecn or args.dctcp,
@@ -146,18 +155,19 @@ class DCTopo(Topo):
         	self.add_host('h%d' % (i+1))
 
         # make links between the two top switches (Core)
-        self.add_link('s1', 's2', **ldealay_config)
+        self.add_link('s1', 's2', **ldealay_config_core)
 
         # make links between the two (Aggregation) switches
-		self.add_link('s3', 's4', **ldealay_config)        
+		self.add_link('s3', 's4', **ldealay_config_agg)        
 
 		# make links between the two top layers (Core and Aggregation) (4 switches)
-		self.add_link('s1', 's3', **ldealay_config)
-		self.add_link('s1', 's4', **ldealay_config)
-		self.add_link('s2', 's3', **ldealay_config)
-		self.add_link('s2', 's4', **ldealay_config)
+		self.add_link('s1', 's3', **ldealay_config_agg)
+		self.add_link('s1', 's4', **ldealay_config_agg)
+		self.add_link('s2', 's3', **ldealay_config_agg)
+		self.add_link('s2', 's4', **ldealay_config_agg)
 
 		# add links from aggregation layer to access layer
+		self.add_link('s3', 's4', **ldealay_config_agg)
 		self.add_link('s3', 's5', **ldealay_config)
 		self.add_link('s3', 's6', **ldealay_config)
 		self.add_link('s4', 's7', **ldealay_config)
@@ -165,9 +175,9 @@ class DCTopo(Topo):
 
 		# add links in the access layer to hosts
 		self.add_link('s5', 's6', **ldealay_config)
-		self.add_link('s5', 'h1', **ldealay_config)
+		self.add_link('s5', 'h1', **lconfig)		# Link to the Server to be tested
 		self.add_link('s5', 'h2', **ldealay_config)
-		self.add_link('s6', 'h1', **ldealay_config)
+		self.add_link('s6', 'h1', **lconfig)		# Link to the Server to be tested
 		self.add_link('s6', 'h2', **ldealay_config)
 		
 		self.add_link('s6', 's7', **ldealay_config)
