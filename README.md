@@ -1,7 +1,17 @@
 # eee4087f-b-project
 
-* Launch an AWS EC2 Instance using the AMI image "cs244-mininet-mptcp-dctcp (ami-a04ac690)"
+* Launch an AWS EC2 Instance using the AMI image "cs244-mininet-mptcp-dctcp (ami-a04ac690)" (location must be set to USA Oregon)
 * ssh into the instance
+* Install Termcolor. To do this run the following commands:
+
+`sudo gedit /etc/apt/sources.list`
+modify the file to include 'universe' (add the following line)
+`deb http://us.archive.ubuntu.com/ubuntu vivid main universe`
+close and save the file and run:
+`sudo apt-get update`
+install termcolor using this command:
+`sudo apt-get install python-termcolor`
+
 * clone the git repo
 	`git clone https://github.com/tino1b2be/eee4087f-b-project.git`
 * cd into `~/eee4087f-b-project/dctcp`
