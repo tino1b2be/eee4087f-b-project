@@ -1,5 +1,7 @@
 # eee4087f-b-project
 
+_Tinotenda Chemvura and John Odetokun_
+
 * Launch an AWS EC2 Instance using the AMI image "cs244-mininet-mptcp-dctcp (ami-a04ac690)" (location must be set to USA Oregon)
 * ssh into the instance
 * Install Termcolor. To do this run the following commands:
